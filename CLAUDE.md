@@ -1,178 +1,160 @@
-# Personal Knowledge Base Schema
+# Personal Knowledge Base Instructions
 
-This file is the operating contract between you (the LLM) and this wiki. Read it at the start of every session before doing anything else. All workflows, conventions, and maintenance rules live here.
-
----
+Read this file at the start of every session. It defines how to build and maintain this Obsidian wiki with the user.
 
 ## Purpose
 
-This wiki is a **persistent, compounding personal knowledge base** covering all domains the human cares about — currently including AI/LLM research, investment analysis, and computer science. You (the LLM) write and maintain it. The human curates sources, directs analysis, and asks questions. You do the summarizing, cross-referencing, filing, and bookkeeping.
+Help the user turn their chosen sources into a connected, reusable knowledge base. The user selects sources and directs the work; you summarize, link, organize, and maintain pages.
 
-The wiki grows richer with every source added and every question asked. Nothing is re-derived from scratch — it is compiled once and kept current.
+Do not assume the user's interests, profession, preferred language, or subject categories. Preserve existing conventions unless the user asks to change them.
 
----
+## User Preferences
 
-## Domains
+The wiki starts without predefined domains. Use these settings when provided; otherwise follow the user's request and the wiki's existing conventions.
 
-Each page should carry a `domain` tag to aid filtering and navigation:
-- `domain/ai` — AI/LLM research, models, techniques
-- `domain/investing` — investment analysis, market concepts, companies
-- `domain/cs` — computer science, systems, programming
+- **Scope:** User-defined; no default subject.
+- **Language:** Follow the user's requested language or existing page language.
+- **Domains:** Optional, user-defined topic labels.
+- **Focus:** Follow the requested analysis angle; ask only when needed.
+- **Wiki root:** The directory containing this file.
+- **Vault location:** Use links relative to the Obsidian vault root.
 
-Use a slash, not a colon: Obsidian rejects tags containing `:` and silently drops them when the Properties panel rewrites the frontmatter. The slash form is also a nested tag, so `#domain` matches all three.
-
----
+When the wiki is empty, organize only the material the user supplies. Do not invent categories, sources, or content to fill the template. Ask about preferences when they affect the task, without requiring a setup questionnaire.
 
 ## Directory Structure
 
-```
-10 LLM-Wiki/
-├── CLAUDE.md              ← this file — read first every session
-├── index.md               ← content catalog — updated on every ingest
-├── log.md                 ← append-only chronological log
-├── raw/                   ← IMMUTABLE source documents (human writes here)
-│   ├── assets/            ← downloaded images and attachments
-│   └── (source files…)
-└── wiki/                  ← LLM-maintained pages (you write here)
-    ├── _overview.md       ← top-level synthesis and entry point
-    ├── entities/          ← people, organizations, places, products
-    ├── concepts/          ← ideas, theories, themes, methodologies
-    ├── sources/           ← one summary page per ingested source
-    └── queries/           ← saved answers worth keeping
+```text
+<wiki-root>/
+├── CLAUDE.md              # These instructions
+├── index.md               # Page catalog
+├── log.md                 # Activity history, newest first
+├── raw/                   # Original sources managed by the user
+│   ├── assets/            # Images and attachments
+│   └── ...
+└── wiki/
+    ├── _overview.md       # Overview and entry point
+    ├── entities/          # People, organizations, places, products, events
+    ├── concepts/          # Ideas, theories, methods, themes
+    ├── sources/           # One summary per source
+    └── queries/           # Saved answers
 ```
 
-**Rules:**
-- Never modify files in `raw/`. They are the source of truth.
-- You own everything in `wiki/`. Create, update, and maintain these files freely.
-- `index.md` and `log.md` are in the root of `10 LLM-Wiki/` — update them on every operation.
+- Never edit, rename, move, or delete files in `raw/`.
+- Maintain `wiki/` within the user's requested scope. Preserve useful existing content.
+- The distributed template already includes the folders, index, and overview. Do not reset them on first use.
+- If working with an incomplete copy, create missing folders and initialize empty index and overview files without fabricated entries.
+- Ignore `.gitkeep` files when reading sources or counting pages. They only preserve empty folders in Git.
+- Update the index after page changes and record completed operations in the log.
+- If this wiki is inside a larger vault, include its folder prefix in links. Keep file operations within the wiki root.
 
----
+## Domains and Tags
+
+Domains are optional. Use the user's existing taxonomy; do not impose a fixed list.
+
+If topic grouping would help and no taxonomy exists, propose a small set based on the actual sources. Obtain the user's agreement before applying a new taxonomy or recategorizing existing pages. A page may have multiple domains or none.
+
+Use nested tags such as `domain/<topic>`, with slash separators rather than colons. Add only relevant tags. Tags do not require Dataview or other plugins.
 
 ## Page Format
 
-Every wiki page uses this structure:
+Use this structure for wiki pages:
 
 ```markdown
 ---
 title: "Page Title"
-type: entity | concept | source | query | overview
-tags: [tag1, tag2]
+type: concept
+tags: []
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-sources: 0          # number of source documents this page draws from
+sources: 0
 ---
 
 # Page Title
 
-One-sentence summary of what this page is about.
+One-sentence summary.
 
-## [Content sections — vary by page type]
+## Content
 
 ## Related
-- [[Link to related page]]
-- [[Another related page]]
+- [[wiki/concepts/related-topic|Related Topic]]
 
 ## Sources
-- [[sources/Source Title]]
+- [[wiki/sources/source-title|Source Title]]
 ```
 
-**Frontmatter fields:**
-- `type`: one of `entity`, `concept`, `source`, `query`, `overview`
-- `tags`: relevant tags for Dataview queries
-- `created` / `updated`: ISO date — update `updated` on every edit
-- `sources`: how many source documents informed this page (increment on each ingest)
+Replace placeholder values and links with actual content. Omit empty sections when they add no value.
 
----
+- `type`: choose one of `entity`, `concept`, `source`, `query`, or `overview`.
+- `tags`: relevant labels; an empty list is valid.
+- `created`: preserve the original creation date.
+- `updated`: use the date of the latest edit.
+- `sources`: count distinct source documents supporting the page. Do not increment for repeated processing of the same source.
+
+Use readable, stable filenames consistent with the wiki. For English titles, use kebab-case, such as `example-topic.md`. Avoid duplicate pages and filename collisions.
 
 ## Page Types
 
-### Entity pages (`wiki/entities/`)
-For specific people, organizations, places, products, events. File name: kebab-case of the entity name (e.g., `alan-turing.md`, `openai.md`).
+These categories describe a page's role, not the user's subject areas. Adapt section headings to the material.
 
-Sections: Background · Key Facts · Relationships · Timeline (if relevant) · Notes · Related · Sources
+| Type | Location | Suggested content |
+| --- | --- | --- |
+| Entity | `wiki/entities/` | Background, facts, relationships, timeline |
+| Concept | `wiki/concepts/` | Definition, properties, explanation, examples, open questions |
+| Source | `wiki/sources/` | Summary, claims, quotes, related entities and concepts, tensions, original source |
+| Query | `wiki/queries/` | Question, answer, findings, caveats, sources used |
+| Overview | `wiki/_overview.md` | Scope, current state, themes, key pages, open questions, recent activity |
 
-### Concept pages (`wiki/concepts/`)
-For ideas, theories, themes, methodologies. File name: kebab-case (e.g., `transformer-architecture.md`).
-
-Sections: Definition · Key Properties · How It Works · Debates / Open Questions · Examples · Related · Sources
-
-### Source pages (`wiki/sources/`)
-One page per ingested source document. File name: kebab-case title (e.g., `attention-is-all-you-need.md`).
-
-Sections: Summary · Key Claims · Notable Quotes · Entities Mentioned · Concepts Mentioned · Contradictions / Tensions · Raw File
-
-### Query pages (`wiki/queries/`)
-Saved answers to questions worth keeping. File name: short-kebab-description (e.g., `comparison-llm-architectures.md`).
-
-Sections: Question · Answer · Key Findings · Caveats · Related · Sources Used
-
-### Overview (`wiki/_overview.md`)
-The entry point to the wiki. Keep it high-level — it should give a reader a mental map of the entire wiki.
-
-Sections: Purpose · Current State · Key Themes · Key Entities · Key Concepts · Open Questions · Recent Activity
-
----
+Create entity and concept pages when they are useful for reuse or navigation. Do not create a page for every passing mention.
 
 ## Workflow: Ingest
 
-When the human adds a new source to `raw/` and asks you to process it:
+When the user asks to process a source:
 
-1. **Read** the source file completely.
-2. **Discuss** key takeaways with the human. Ask what angle they want to emphasize.
-3. **Create** a source summary page at `wiki/sources/<kebab-title>.md`.
-4. **Update** existing entity pages for entities mentioned in the source, or create new ones.
-5. **Update** existing concept pages for concepts mentioned, or create new ones.
-6. **Flag contradictions**: if the source contradicts something already in the wiki, note it explicitly on the relevant page under a "Contradictions / Tensions" section.
-7. **Update** `wiki/_overview.md` if the new source shifts the overall picture.
-8. **Update** `index.md`: add the new source page and any new entity/concept pages; update summaries for modified pages.
-9. **Append** to `log.md`: `## [YYYY-MM-DD] ingest | Source Title`
+1. Read the source in full. If access is incomplete, explain the limitation before proceeding.
+2. Follow the requested focus. If none is given and different angles would materially change the result, discuss the main points and ask which angle to emphasize.
+3. Create or update its summary in `wiki/sources/`, linking to the original file in `raw/` and recording available author, date, and URL.
+4. Update or create useful entity and concept pages. Reuse existing pages where possible.
+5. Add links between related pages. Flag contradictions rather than silently replacing conflicting claims.
+6. Update the overview if the new material changes the overall picture.
+7. Update the index and its counts.
+8. Prepend an `ingest` entry to the log, listing pages created and updated.
 
-A single ingest may touch 5–15 wiki pages. This is expected and correct.
-
----
+Distinguish source claims from your interpretation. Do not invent facts, quotes, citations, or missing metadata.
 
 ## Workflow: Query
 
-When the human asks a question:
+1. Read the index and relevant pages.
+2. Answer with links to supporting wiki and source pages.
+3. Distinguish evidence, inference, disagreement, and missing information.
+4. Ask whether to save the answer, unless the user already requested it.
+5. If saving, create or update a query page and update the index.
+6. Prepend a `query` entry to the log.
 
-1. **Read `index.md`** to identify relevant pages.
-2. **Read** the relevant wiki pages.
-3. **Synthesize** an answer with citations to wiki pages and source pages.
-4. **Ask the human** whether the answer is worth filing as a query page.
-5. If yes, **create** `wiki/queries/<kebab-description>.md`.
-6. **Update** `index.md` and append to `log.md`: `## [YYYY-MM-DD] query | Question summary`
-
-Answers can take different forms: prose, comparison table, Marp slide deck, bullet list. Match the format to the question.
-
----
+Match the answer format to the user's request. Do not treat unsupported claims as established knowledge.
 
 ## Workflow: Lint
 
-When the human asks for a health check (`/lint`):
+When asked to check the wiki, look for:
 
-Check for:
-- **Contradictions** between pages that haven't been flagged
-- **Stale claims** that newer sources have superseded
-- **Orphan pages** with no inbound links from other wiki pages
-- **Missing pages** for concepts or entities mentioned in multiple places but lacking their own page
-- **Broken cross-references** (links to pages that don't exist)
-- **Index gaps** (pages in `wiki/` not listed in `index.md`)
-- **Data gaps** that could be filled with a web search
+- Unflagged contradictions and outdated claims.
+- Orphan pages and useful entities or concepts lacking pages.
+- Broken links, duplicate pages, and missing index entries.
+- Incorrect metadata or source counts.
+- Evidence gaps requiring additional sources.
 
-Output a lint report listing issues by severity. Offer to fix them. Append to `log.md`: `## [YYYY-MM-DD] lint | brief findings`
+Report issues by severity and offer fixes. Apply fixes when the user requests them. Prepend a `lint` entry to the log.
 
----
+`/lint` is a workflow label; this template does not install a slash command.
 
-## Cross-Reference Conventions
+## Cross-References
 
-- Use Obsidian wiki-links: `[[wiki/entities/entity-name|Display Name]]`
-- When mentioning an entity or concept that has its own page, always link it — first mention per section is enough.
-- When creating a new page, scan existing pages for mentions of the new entity/concept and add links back.
-- The `Related` section at the bottom of every page lists the most relevant cross-links.
+- Use Obsidian links such as `[[wiki/entities/entity-name|Display Name]]`.
+- Link the first relevant mention of an existing page in each section.
+- When creating a page, check related existing pages for useful links back.
+- Keep the Related section focused on meaningful connections.
+- Ensure generated links resolve from the actual vault root.
 
----
-
-## Index Format (`index.md`)
+## Index Format
 
 ```markdown
 # Wiki Index
@@ -180,57 +162,46 @@ Output a lint report listing issues by severity. Offer to fix them. Append to `l
 _Last updated: YYYY-MM-DD — N sources, N pages_
 
 ## Overview
-- [[wiki/_overview|Overview]] — top-level synthesis and entry point
+- [[wiki/_overview|Overview]] — wiki entry point
 
 ## Sources (N)
-- [[wiki/sources/source-title|Source Title]] — one-line summary
+- [[wiki/sources/source-title|Source Title]] — summary
 
 ## Entities (N)
-- [[wiki/entities/entity-name|Entity Name]] — one-line description
+- [[wiki/entities/entity-name|Entity Name]] — description
 
 ## Concepts (N)
-- [[wiki/concepts/concept-name|Concept Name]] — one-line description
+- [[wiki/concepts/concept-name|Concept Name]] — description
 
 ## Queries (N)
 - [[wiki/queries/query-name|Query Title]] — question answered
 ```
 
-Keep entries in alphabetical order within each section. Update the header counts on every edit.
+List actual pages only, alphabetically within each section. Count all Markdown pages under `wiki/` in the total, including the overview. Count source-summary pages for the source total. Do not count the index, log, instructions, or raw documents as wiki pages.
 
----
+## Log Format
 
-## Log Format (`log.md`)
-
-Entries are prepended (newest first). Each entry starts with a consistent prefix so it is grep-parseable:
+Prepend new entries, newest first. Preserve earlier entries.
 
 ```markdown
 ## [YYYY-MM-DD] <operation> | <title>
 
-Brief description of what was done, what changed, what was notable.
-Pages created: list
-Pages updated: list
+Brief description of the operation and notable findings.
+Pages created: list or none
+Pages updated: list or none
 ```
 
-Operations: `ingest`, `query`, `lint`, `schema-update`
+Operations: `ingest`, `query`, `lint`, `schema-update`.
 
-To get the last 5 entries: `grep "^## \[" log.md | head -5`
+## Session Start
 
----
+1. Read `CLAUDE.md`.
+2. Read `index.md`.
+3. Read the newest five log entries.
+4. Continue with the user's request. Ask what they want to do only if no task was provided.
 
-## Session Start Checklist
+## Updating These Instructions
 
-At the start of every session:
-1. Read this file (`CLAUDE.md`).
-2. Read `index.md` to get current state of the wiki.
-3. Read the last 5 entries in `log.md` to see what happened recently.
-4. Ask the human what they want to do today.
+Change preferences, taxonomy, or workflows when requested by the user. Preserve established conventions unless the requested change requires migration. Record changes as `schema-update` entries in the log.
 
----
-
-## Schema Evolution
-
-This schema is a living document. When you and the human discover that a convention isn't working, update this file. Append to `log.md`: `## [YYYY-MM-DD] schema-update | what changed and why`.
-
-Current version: `1.2` — 2026-10-07: domain tags changed from `domain:xx` to `domain/xx` because Obsidian drops tags containing a colon.
-
-Previous: `1.1` — 2026-04-17: expanded scope from LLM-only to multi-domain personal knowledge base; added domain tagging convention.
+Version: `2.0` — General-purpose template with user-defined scope and optional domains.
